@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympic Robot v4.0 - Симулятор</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #ffe066 0%, #ff9a7b 100%);
+            min-height: 100vh;
+            padding: 12px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            min-height: calc(100vh - 24px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ffe066 0%, #ff9a7b 100%);
+            color: #333;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .header h1 {
+            font-size: 1.6em;
+            margin: 0;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95em;
+            margin: 0;
+        }
+        
+        /* Трёхколоночный контент: левая панель | центр | правая панель; помещается без скролла */
+        .content {
+            display: grid;
+            grid-template-columns: 280px 1fr 260px;
+            gap: 0;
+            min-height: 0;
+            max-height: calc(100vh - 70px);
+            overflow: hidden;
+        }
+        
+        .panel-left {
+            padding: 20px;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .panel-center {
+            padding: 16px;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 0;
+            max-height: 100%;
+        }
+        
+        .panel-right {
+            padding: 20px;
+            background: #fafafa;
+            border-left: 1px solid #e0e0e0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .upload-section {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px dashed #ffe066;
+            text-align: center;
+        }
+        
+        .upload-section.dragover {
+            background: #fffbf0;
+            border-color: #ff9a7b;
+        }
+        
+        .upload-section h2 {
+            font-size: 1em;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .upload-section p {
+            font-size: 0.85em;
+            color: #666;
+            margin: 0 0 12px 0;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-button {
+            display: inline-block;
+            padding: 10px 24px;
+            background: #ff9a7b;
+            color: #333;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .file-input-button:hover {
+            background: #ffe066;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 154, 123, 0.5);
+        }
+        
+        .file-info {
+            padding: 10px 12px;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.85em;
+            display: none;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .file-info.show {
+            display: block;
+        }
+        
+        .file-info strong {
+            color: #e85a3a;
+        }
+        
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .action-button {
+            padding: 14px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .action-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .action-button.simulator {
+            background: linear-gradient(135deg, #ffe066 0%, #ff9a7b 100%);
+            color: #333;
+        }
+        
+        .action-button.simulator:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 224, 102, 0.5);
+        }
+        
+        .action-button.bluetooth {
+            background: linear-gradient(135deg, #ff9a7b 0%, #e85a3a 100%);
+            color: #fff;
+        }
+        
+        .action-button.bluetooth:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 154, 123, 0.5);
+        }
+        
+        .action-button#btnMapEditor {
+            background: #555;
+            color: #ffe066;
+        }
+        
+        .action-button#btnMapEditor:hover {
+            background: #333;
+            color: #ffe066;
+        }
+        
+        .panel-right .section-title {
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 4px;
+        }
+        
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            display: none;
+            flex-shrink: 0;
+        }
+        
+        .status.show {
+            display: block;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .tips-box {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.8em;
+            color: #555;
+            border: 1px solid #e8e8e8;
+        }
+        
+        .tips-box ul {
+            margin: 8px 0 0 0;
+            padding-left: 18px;
+        }
+        
+        .tips-box li {
+            margin-bottom: 4px;
+        }
+        .tips-box kbd {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .sensor-panel {
+            background: #f0f4f8;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.85em;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 12px;
+        }
+        .sensor-panel:empty {
+            display: none;
+        }
+        .sensor-panel-title {
+            font-weight: bold;
+            color: #e85a3a;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        .sensor-panel-section {
+            font-weight: bold;
+            color: #555;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            font-size: 0.9em;
+        }
+        .sensor-panel-section:first-of-type {
+            margin-top: 0;
+        }
+        .sensor-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+        .sensor-row span { color: #666; }
+        .sensor-row strong { color: #333; }
+        
+        .simulator-container {
+            display: none;
+            width: 100%;
+            max-width: 100%;
+            flex: 1;
+            min-height: 0;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .simulator-container.show {
+            display: flex;
+        }
+        
+        /* Область симуляции — прямоугольник 800×600, помещается без скролла */
+        .simulator-canvas-wrap {
+            max-width: 100%;
+            max-height: calc(100vh - 220px);
+            aspect-ratio: 800 / 600;
+            flex-shrink: 0;
+        }
+        #simulatorCanvas {
+            border: 3px solid #ffe066;
+            border-radius: 12px;
+            background: #f0f0f0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .simulator-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .simulator-controls button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            background: #ff9a7b;
+            color: #333;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        
+        .simulator-controls button:hover {
+            background: #ffe066;
+            color: #333;
+        }
+
+        #btnRobotButton {
+            font-size: 1.05em;
+            padding: 10px 24px;
+            background: #ffe066;
+            color: #333;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        #btnRobotButton:hover {
+            background: #ff9a7b;
+            color: #fff;
+        }
+        
+        .simulator-controls .hint-text {
+            width: 100%;
+            margin-top: 6px;
+            font-size: 0.8em;
+            color: #666;
+            text-align: center;
+        }
+
+        /* Редактор карты */
+        .map-editor-container {
+            display: none;
+            width: 100%;
+            max-width: 100%;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px solid #ffe066;
+            flex: 1;
+            min-height: 0;
+            flex-direction: column;
+        }
+        .map-editor-container.show {
+            display: flex;
+        }
+        .map-editor-container h2 {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .map-editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .map-editor-toolbar .tool-btn {
+            padding: 8px 12px;
+            border: 2px solid #ffe066;
+            border-radius: 8px;
+            background: white;
+            color: #555;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .map-editor-toolbar .tool-btn:hover {
+            background: #ffe066;
+            color: #333;
+            border-color: #ffe066;
+        }
+        .map-editor-toolbar .tool-btn.active {
+            background: #ffe066;
+            color: #333;
+            border-color: #ffe066;
+        }
+        /* Область рисования карты — такой же прямоугольник 800×600 */
+        .map-editor-canvas-wrap {
+            max-width: 100%;
+            max-height: calc(100vh - 260px);
+            aspect-ratio: 800 / 600;
+            flex-shrink: 0;
+        }
+        #mapEditorCanvas {
+            border: 3px solid #ffe066;
+            border-radius: 8px;
+            background: #fff;
+            cursor: crosshair;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .map-editor-hint {
+            margin-top: 8px;
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .placeholder-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.95em;
+            text-align: center;
+            padding: 24px;
+        }
+        
+        .placeholder-center .icon {
+            font-size: 3em;
+            margin-bottom: 12px;
+        }
+        
+        .placeholder-center.hide {
+            display: none !important;
+        }
+        
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr 240px;
+            }
+            .panel-left {
+                grid-column: 1;
+            }
+            .panel-center {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            .panel-right {
+                grid-column: 2;
+                grid-row: 1 / 3;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr;
+            }
+            .panel-left, .panel-center, .panel-right {
+                grid-column: 1;
+            }
+            .panel-left { grid-row: 1; }
+            .panel-center { grid-row: 2; }
+            .panel-right { grid-row: 3; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Olympic Robot v4.0</h1>
+            <p>Симулятор и редактор карты для учебного робота. <a href="../lesson/index.html" style="color:#333;font-weight:600;text-decoration:underline;">Урок: документация и сенсоры</a></p>
+        </div>
+        
+        <div class="content">
+            <!-- Левая панель: загрузка и действия -->
+            <div class="panel-left">
+                <div class="upload-section" id="uploadSection">
+                    <h2>📁 Загрузка скрипта</h2>
+                    <p>Перетащите .py сюда или нажмите кнопку</p>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="fileInput" accept=".py">
+                        <div class="file-input-button">Выбрать файл</div>
+                    </div>
+                    <div class="file-info" id="fileInfo">
+                        <strong>Файл:</strong> <span id="fileName"></span><br>
+                        <strong>Размер:</strong> <span id="fileSize"></span> байт
+                    </div>
+                </div>
+                <div class="upload-section" id="mapUploadSection">
+                    <h2>🗺 Загрузка карты</h2>
+                    <p>Перетащите .json сюда или нажмите кнопку</p>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="mapFileInput" accept=".json,application/json">
+                        <div class="file-input-button">Выбрать карту</div>
+                    </div>
+                    <div class="file-info" id="mapFileInfo">
+                        <strong>Карта:</strong> <span id="mapFileName"></span>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="action-button simulator" id="btnSimulator" disabled>
+                        🎮 Запустить симулятор
+                    </button>
+                    <button class="action-button" id="btnMapEditor">
+                        🗺 Редактор карты
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Центр: холст симулятора или редактора карты -->
+            <div class="panel-center">
+                <div class="placeholder-center" id="placeholderCenter">
+                    <span class="icon">🤖</span>
+                    <p><strong>Перед запуском симулятора сделайте три шага:</strong></p>
+                    <ol style="margin-top:8px; text-align:left; max-width:420px;">
+                        <li><strong>Слева в блоке «Загрузка скрипта»</strong> выберите файл <code>.py</code> со своим кодом.</li>
+                        <li><strong>Слева в блоке «Загрузка карты»</strong> выберите файл карты <code>.json</code> <em>или</em> откройте «🗺 Редактор карты», нарисуйте трассу и нажмите «💾 Сохранить».</li>
+                        <li>Когда выбран и скрипт, и карта, кнопка <strong>«🎮 Запустить симулятор»</strong> станет активной — нажмите её.</li>
+                    </ol>
+                    <p style="margin-top:8px; max-width:420px;">
+                        В симуляторе для начала движения нажмите кнопку <strong>«Старт»</strong>.
+                    </p>
+                </div>
+                <div class="simulator-container" id="simulatorContainer">
+                    <div class="simulator-canvas-wrap">
+                        <canvas id="simulatorCanvas" width="800" height="600"></canvas>
+                    </div>
+                    <div class="simulator-controls">
+                        <button id="btnReset">🔄 Сброс</button>
+                        <button id="btnRobotButton">🔘 Старт</button>
+                        <button id="btnClose">✖ Закрыть</button>
+                        <p class="hint-text">Симулятор сам запускает скрипт. Нажмите «Старт» для начала.</p>
+                    </div>
+                </div>
+                <div class="map-editor-container" id="mapEditorContainer">
+                    <h2>🗺 Редактор карты</h2>
+                    <div class="map-editor-toolbar">
+                        <button type="button" class="tool-btn active" data-tool="pencil" id="toolPencil">✏️ Полосы</button>
+                        <button type="button" class="tool-btn" data-tool="line" id="toolLine">📏 Прямая</button>
+                        <button type="button" class="tool-btn" data-tool="go" id="toolGo">🟢 GO</button>
+                        <button type="button" class="tool-btn" data-tool="stop" id="toolStop">🔴 STOP</button>
+                        <button type="button" class="tool-btn" data-tool="left" id="toolLeft">↩️ LEFT</button>
+                        <button type="button" class="tool-btn" data-tool="right" id="toolRight">↪️ RIGHT</button>
+                        <button type="button" class="tool-btn" data-tool="eraser" id="toolEraser">🧹 Ластик</button>
+                        <button type="button" class="tool-btn" data-tool="start" id="toolStart">🤖 Старт</button>
+                        <span>Угол:</span>
+                        <input type="number" id="startAngle" min="0" max="360" value="90" style="width: 48px;">°
+                        <span>Кисть:</span>
+                        <input type="range" id="brushSize" min="4" max="40" value="12" style="width: 80px;">
+                        <span id="brushSizeLabel">12</span>px
+                        <button type="button" class="tool-btn" id="btnEditorClear">🗑 Очистить</button>
+                        <button type="button" class="tool-btn" id="btnEditorSave" style="background: #ffe066; color: #333; border-color: #ffe066;">💾 Сохранить</button>
+                        <button type="button" class="tool-btn" id="btnEditorSaveFile" style="background: #ff9a7b; color: #fff; border-color: #ff9a7b;">📤 Сохранить в файл</button>
+                        <button type="button" class="tool-btn" id="btnEditorLoadFile" style="background: #555; color: #ffe066; border-color: #555;">📂 Загрузить карту</button>
+                        <input type="file" id="loadMapInput" accept=".json,application/json" style="display: none;">
+                        <button type="button" class="tool-btn" id="btnEditorClose">✖ Закрыть</button>
+                    </div>
+                    <div class="map-editor-canvas-wrap">
+                        <canvas id="mapEditorCanvas" width="800" height="600"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Правая панель: статус, показания датчиков (без наложения на карту) и подсказки -->
+            <div class="panel-right">
+                <div class="section-title">Статус</div>
+                <div class="status" id="status"></div>
+                <div id="sensorPanel" class="sensor-panel" aria-label="Показания датчиков симулятора"></div>
+                <div class="tips-box">
+                    <strong>Подсказки</strong>
+                    <ul>
+                        <li><strong>Функция входа:</strong> Используйте <code>def run_robot(bot):</code></li>
+                        <li><strong>Задержки:</strong> Вызов <code>bot.sleep(seconds)</code> — не забыли про <code>yield</code></li>
+                        <li><strong>Совместимость:</strong> Код работает одинаково в браузере и на реальном роботе</li>
+                        <li>Карта из редактора подхватывается симулятором после «Сохранить»</li>
+                        <li>«Сохранить в файл» — скачать карту в JSON; «Загрузить карту» — загрузить другую версию карты</li>
+                        <li><strong>Редактор карты:</strong> Черные полосы — линия для датчиков. Ластик — зажать и вести. Зоны GO/STOP/LEFT/RIGHT — детекция камеры. Старт — клик задаёт позицию (0° вправо, 90° вверх).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pyodide для выполнения Python в браузере -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <script src="../shared/simulator/simulator.js"></script>
+    <script src="../shared/simulator/map-editor.js"></script>
+    <script src="../shared/simulator/simulator-ui.js"></script>
+    <script src="../shared/simulator/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash === '#editor') {
+                var editor = document.getElementById('mapEditorContainer');
+                var placeholder = document.getElementById('placeholderCenter');
+                if (editor) editor.classList.add('show');
+                if (placeholder) placeholder.classList.add('hide');
+            }
+        });
+    </script>
+</body>
+</html>
