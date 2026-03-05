@@ -544,6 +544,9 @@
                         <input type="file" id="mapFileInput" accept=".json,application/json">
                         <div class="file-input-button">Выбрать карту</div>
                     </div>
+                    <p style="margin-top: 10px; font-size: 0.85em;">
+                        <a href="default_map.json" id="linkDefaultMap" style="color:#e85a3a;font-weight:600;text-decoration:underline;">Загрузить карту по умолчанию</a>
+                    </p>
                     <div class="file-info" id="mapFileInfo">
                         <strong>Карта:</strong> <span id="mapFileName"></span>
                     </div>
@@ -621,7 +624,7 @@
                     <strong>Подсказки</strong>
                     <ul>
                         <li><strong>Функция входа:</strong> Используйте <code>def run_robot(bot):</code></li>
-                        <li><strong>Задержки:</strong> Вызов <code>bot.sleep(seconds)</code> — не забыли про <code>yield</code></li>
+                        <li><strong>Задержки:</strong> Вызов <code>yield bot.sleep(seconds)</code></li>
                         <li><strong>Совместимость:</strong> Код работает одинаково в браузере и на реальном роботе</li>
                         <li>Карта из редактора подхватывается симулятором после «Сохранить»</li>
                         <li>«Сохранить в файл» — скачать карту в JSON; «Загрузить карту» — загрузить другую версию карты</li>

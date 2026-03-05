@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initFileUpload();
     ui.initMapUpload();
+    initDefaultMapLink();
     if (hasScriptEditor) initScriptEditorSync();
     ui.initSimulatorButtons(
         hasScriptEditor
@@ -33,6 +34,24 @@ document.addEventListener('DOMContentLoaded', () => {
             : 'Сначала загрузите Python скрипт'
     );
 });
+
+function initDefaultMapLink() {
+    const link = document.getElementById('linkDefaultMap');
+    if (!link || !ui.handleMapFile) return;
+    link.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+            const resp = await fetch('default_map.json');
+            if (!resp.ok) throw new Error(resp.statusText);
+            const text = await resp.text();
+            const blob = new Blob([text], { type: 'application/json' });
+            const file = new File([blob], 'default_map.json', { type: 'application/json' });
+            ui.handleMapFile(file);
+        } catch (err) {
+            ui.showStatus('Ошибка загрузки карты: ' + (err.message || String(err)), 'error');
+        }
+    });
+}
 
 function initFileUpload() {
     const fileInput = document.getElementById('fileInput');

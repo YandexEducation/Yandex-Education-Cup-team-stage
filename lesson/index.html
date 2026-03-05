@@ -369,15 +369,15 @@
         <div class="header">
             <h1>Симулятор и сенсоры робота</h1>
             <p>Физические принципы работы датчиков, соответствие работы симулятора и робота, основы программирования</p>
-            <a href="../simulator/index.html">Открыть симулятор →</a>
+            <a href="https://yandexeducation.github.io/Yandex-Education-Cup-team-stage/simulator/" target="_blank">Открыть симулятор →</a>
         </div>
 
         <div class="content">
         <!-- Введение -->
         <section class="section intro-section">
             <h2>Зачем этот урок</h2>
-            <p>Перед вами — вводный урок по роботу. Здесь вы узнаете, как устроен робот, как он видит и передвигается.</p>
-            <p><strong>Что вы увидите:</strong> описание каждого сенсора (датчики линии, датчик расстояния, камера, энкодеры) и исполнительных устройств (моторы, LED-лента). Как взаимодействовать с этими сенсорами на програмном уровне.</p>
+            <p>Для успешной подготовки к командному этапу олимпиады мы предлагаем вам ознакомиться с вводным тренировочным уроком. Он посвящен изучению робота, которого предстоит программировать на очном финале в Москве. В рамках этого урока вы сможете отработать навыки управления в онлайн-симуляторе, а также изучите устройство робота, принципы его движения и систему технического зрения.</p>
+            <p><strong>Что вы изучите:</strong> описание каждого сенсора (датчики линии, датчик расстояния, камера, энкодеры) и исполнительных устройств (моторы, LED-лента). Как взаимодействовать с этими сенсорами на программном уровне.</p>
             <p><strong>Что вы сделаете:</strong> научите робота следовать по линии и реагировать на знаки.</p>
         </section>
 
@@ -395,7 +395,7 @@
             
             <div class="card mapping-card">
                 <h3>Инфракрасный датчик расстояния</h3>
-                <p>Датчик излучает ИК-луч вперёд и измеряет отражённый свет. Близкий объект — высокое значение; дальний — низкое (до ~80 см). На показания так же влияют внешний свет, цвет и фактура объекта (тёмные/матовые отражают хуже), угол наклона. Датчик имеет небольшую погрешность, поэтому его лучше использовать для определения близких препятствий.</p>
+                <p>Датчик излучает ИК-луч вперёд и измеряет отражённый свет. Близкий объект — высокое значение; дальний — низкое (до ~80 см). На показания также влияют внешний свет, цвет и фактура объекта (тёмные/матовые отражают хуже), угол наклона. Датчик имеет небольшую погрешность, поэтому его лучше использовать для определения близких препятствий.</p>
                 <p><strong>В программе:</strong> <code>bot.sharp.read()</code> или <code>bot.sharp.distance_cm()</code>. <strong>В симуляторе:</strong> трассировка луча по карте до границы полигона. Результат в сантиметрах или в виде сырого значения.</p>
             </div>
             
@@ -424,9 +424,9 @@
             </div>
 
             <div class="img-block">
-                <img src="robot-sensors-front.png" alt="Робот спереди: камера, ИК-датчики, кнопка" style="margin-bottom: 16px;">
+                <img src="https://raw.githubusercontent.com/YandexEducation/Yandex-Education-Cup-team-stage/main/lesson/robot-sensors-front.png" alt="Робот спереди: камера, ИК-датчики, кнопка" style="margin-bottom: 16px;">
                 <p class="caption">Вид спереди: камера (4), ИК-датчики (2), кнопка (7), Led подсветка (6)</p>
-                <img src="robot-sensors-bottom.png" alt="Робот снизу: три датчика линии">
+                <img src="https://raw.githubusercontent.com/YandexEducation/Yandex-Education-Cup-team-stage/main/lesson/robot-sensors-bottom.png" alt="Робот снизу: три датчика линии">
                 <p class="caption">Вид снизу: три датчика линии (1), моторы с энкодерами (3,5)</p>
             </div>
             
@@ -437,7 +437,7 @@
             <h2>2. Практическая часть</h2>
             
             <p>В этом разделе: примеры кода по каждому компоненту робота и практические задания.</p>
-            <p><strong>Чему научишься:</strong> управлять моторами и паузами (<code>yield</code>), читать датчики линии и расстояния, обрабатывать знаки камеры, менять цвет LED, писать скрипт следования по линии и реакции на знаки.</p>
+            <p><strong>Чему научитесь:</strong> управлять моторами и паузами (<code>yield</code>), читать датчики линии и расстояния, обрабатывать знаки камеры, менять цвет LED, писать скрипт следования по линии и реакции на знаки.</p>
 
             <h3>2.1. Работа с компонентами робота</h3>
             <p>Скрипт робота — функция <code>def run_robot(bot):</code>. Симулятор и робот вызывают её при старте. Параметр <code>bot</code> — объект с доступом ко всем устройствам (моторы, датчики, камера, LED). Функция должна быть генератором: для паузы пиши <code>yield bot.sleep(секунды)</code> — иначе симулятор не обновит позицию и датчики.</p>
@@ -452,7 +452,7 @@
     bot.motors.move(-30, 30)     # поворот влево
     yield bot.sleep(0.5)
     bot.motors.stop()</pre>
-                <p><a href="example_motors.py" download class="download-btn">Скачать</a></p>
+                <p><a href="https://raw.githubusercontent.com/YandexEducation/Yandex-Education-Cup-team-stage/main/lesson/example_motors.py" download class="download-btn">Скачать</a></p>
             </div>
 
             <div class="card">
@@ -510,11 +510,11 @@ bot.leds.write()</pre>
         else:
             bot.motors.move(40, 40)
         yield bot.sleep(0.05)</pre>
-                <p><a href="example_stop_detect.py" download class="download-btn">Скачать</a></p>
+                <p><a href="https://raw.githubusercontent.com/YandexEducation/Yandex-Education-Cup-team-stage/main/lesson/example_stop_detect.py" download class="download-btn">Скачать</a></p>
             </div>
 
             <h3>2.2. Практические задания</h3>
-            <p>Напиши скрипты сам и проверь в <a href="../simulator/index.html">симуляторе</a>.</p>
+            <p>Попробуйте написать скрипты сами и проверить в <a href="https://yandexeducation.github.io/Yandex-Education-Cup-team-stage/simulator/" target="_blank">симуляторе</a>.</p>
 
             <div class="task-card">
                 <h4>Задача 1. Первый запуск</h4>
@@ -528,13 +528,13 @@ bot.leds.write()</pre>
     yield bot.sleep(2.0)
     bot.motors.stop()</pre></div>
                 </div>
-                <p class="task-download"><a href="task_1_start.py" download class="download-btn">⬇ Скачать готовый скрипт</a></p>
+                <p class="task-download"><a href="https://raw.githubusercontent.com/YandexEducation/Yandex-Education-Cup-team-stage/main/lesson/task_1_start.py" download class="download-btn">⬇ Скачать готовый скрипт</a></p>
             </div>
 
             <div class="task-card">
                 <h4>Задача 2. Следование по линии</h4>
-                <p>Напиши скрипт движения между черных линий.</p>
-                <p><strong>Напиши скрипт:</strong> робот едет по белой области между черных линий. Читай три датчика. Если левый на линии — поворот вправо; правый — влево; три датчика на линии — стоп; иначе — вперёд. В цикле <code>yield bot.sleep(0.05)</code>.</p>
+                <p>Напишите скрипт движения между черных линий.</p>
+                <p><strong>Напишите скрипт:</strong> робот едет по белой области между черных линий. Читай три датчика. Если левый на линии — поворот вправо; правый — влево; три датчика на линии — стоп; иначе — вперёд. В цикле <code>yield bot.sleep(0.05)</code>.</p>
                 <div class="exercise">
                     <button class="hint-btn">Подсказка</button>
                     <button class="solution-btn">Показать решение</button>
@@ -557,12 +557,12 @@ bot.leds.write()</pre>
             bot.motors.move(30, 30)
         yield bot.sleep(0.05)</pre></div>
                 </div>
-                <p class="task-download"><a href="task_2_line.py" download class="download-btn">⬇ Скачать готовый скрипт</a></p>
+                <p class="task-download"><a href="https://raw.githubusercontent.com/YandexEducation/Yandex-Education-Cup-team-stage/main/lesson/task_2_line.py" download class="download-btn">⬇ Скачать готовый скрипт</a></p>
             </div>
 
             <div class="task-card">
                 <h4>Задача 3. Реакция на знаки</h4>
-                <p><strong>Добавь к задаче 2:</strong> проверяй <code>bot.camera.detect_sign()</code>. STOP — остановка 2 сек; GO — вперёд 1.5 сек; LEFT — поворот влево 0.5 сек; RIGHT — вправо 0.5 сек. Используй <code>continue</code> после обработки знака.</p>
+                <p><strong>Добавьте к задаче 2:</strong> проверяй <code>bot.camera.detect_sign()</code>. STOP — остановка 2 сек; GO — вперёд 1.5 сек; LEFT — поворот влево 0.5 сек; RIGHT — вправо 0.5 сек. Используй <code>continue</code> после обработки знака.</p>
                 <div class="exercise">
                     <button class="hint-btn">Подсказка</button>
                     <button class="solution-btn">Показать решение</button>
@@ -600,12 +600,12 @@ bot.leds.write()</pre>
             bot.motors.move(30, 30)
         yield bot.sleep(0.05)</pre></div>
                 </div>
-                <p class="task-download"><a href="task_3_signs.py" download class="download-btn">⬇ Скачать готовый скрипт</a></p>
+                <p class="task-download"><a href="https://raw.githubusercontent.com/YandexEducation/Yandex-Education-Cup-team-stage/main/lesson/task_3_signs.py" download class="download-btn">⬇ Скачать готовый скрипт</a></p>
             </div>
 
             <div class="task-card">
                 <h4>Задача 4. LED-подсветка</h4>
-                <p><strong>Добавь к задаче 3:</strong> при старте мигание зелёный → красный → жёлтый → синий (по 1 сек). В цикле: на STOP — красный, на GO — зелёный, на LEFT/RIGHT — жёлтый, иначе — выключить.</p>
+                <p><strong>Добавьте к задаче 3:</strong> при старте мигание зелёный → красный → жёлтый → синий (по 1 сек). В цикле: на STOP — красный, на GO — зелёный, на LEFT/RIGHT — жёлтый, иначе — выключить.</p>
                 <div class="exercise">
                     <button class="hint-btn">Подсказка</button>
                     <button class="solution-btn">Показать решение</button>
@@ -622,12 +622,12 @@ bot.leds.write()</pre>
         yield bot.sleep(0.3)
     # Дальше — цикл следования по линии с подсветкой по знакам</pre></div>
                 </div>
-                <p class="task-download"><a href="task_4_led.py" download class="download-btn">⬇ Скачать готовый скрипт</a></p>
+                <p class="task-download"><a href="https://raw.githubusercontent.com/YandexEducation/Yandex-Education-Cup-team-stage/main/lesson/task_4_led.py" download class="download-btn">⬇ Скачать готовый скрипт</a></p>
             </div>
         </section>
 
         <section class="section">
-            <p><a href="../simulator/index.html">Открой симулятор</a>, загрузи скрипт, выбери карту и нажми «Старт». <a href="lesson_script.py" download>Полный скрипт</a> — для проверки всех функций.</p>
+            <p><a href="https://yandexeducation.github.io/Yandex-Education-Cup-team-stage/simulator/" target="_blank">Откройте симулятор</a>, загрузите скрипт, выберите карту и нажмите «Старт».</p>
         </section>
 
         <section class="section">
@@ -636,8 +636,8 @@ bot.leds.write()</pre>
         </section>
 
         <section class="section finale-section">
-            <h2>🎉 Молодец!</h2>
-            <p>Если ты прошёл урок и выполнил практические задания — ты готов к следующему шагу. Ждём тебя на финале олимпиады роботов!</p>
+            <h2>🎉 Молодцы!</h2>
+            <p>Если вы прошли урок и выполнили практические задания — вы готовы к следующему шагу. Ждём вас на финале олимпиады Кубок Яндекс Образования!</p>
         </section>
 
     
