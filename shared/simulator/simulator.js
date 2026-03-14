@@ -855,8 +855,6 @@ except Exception as e:
         });
         
         const leds = this.bot && this.bot.leds ? this.bot.leds : null;
-        // console.log(leds.pixels);
-        // console.log(this.bot);
         if (leds && leds.pixels) {
             for (let i = 0; i < 4; i++) {
                 const ledAngle = (150 + i * 20) * Math.PI / 180;
