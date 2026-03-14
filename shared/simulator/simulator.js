@@ -179,6 +179,7 @@ class RobotSimulator {
                     for (let i = 0; i < 4; i++) {
                         self.bot.leds.pixels[i] = c;
                     }
+                    
                 },
                 write: () => {}
             },
@@ -332,13 +333,18 @@ class RobotSimulator {
             },
             leds: {
                 pixels: [[255,165,0], [255,165,0], [255,165,0], [255,165,0]],
+                pixels_unwrited: [[255,165,0], [255,165,0], [255,165,0], [255,165,0]],
                 fill: (color) => {
                     const c = Array.isArray(color) ? [...color] : [color[0], color[1], color[2]];
                     for (let i = 0; i < 4; i++) {
-                        botAPI.leds.pixels[i] = c;
+                        // Исправлены светодиоды
+                        self.bot.leds.pixels_unwrited[i] = c;
                     }
                 },
-                write: () => {}
+                write: () => {
+                    // Делаем так, чтобы write был необходим для применения (как в условии)
+                    self.bot.leds.pixels = [...self.bot.leds.pixels_unwrited];
+                }
             },
             line_left: { read: () => self.sensors.lineLeft },
             line_sensor: { read: () => self.sensors.lineCenter },
@@ -563,13 +569,18 @@ except Exception as e:
                     
                     setTimeout(stepGenerator, 0);
                 } catch (error) {
-                    if (error.message && error.message.includes('StopIteration')) {
-                        self.scriptRunning = false;
-                    } else {
-                        console.error('Ошибка выполнения генератора:', error);
-                        throw error;
+                    self.scriptRunning = false;
+                    
+                    // Добавлена обработка ошибок
+                    if (error.message && String(error).includes('PythonError')){
+                        console.error('Ошибка выполнения Python скрипта:', error);
+                        alert('Ошибка выполнения Python скрипта: ' + (error && error.message ? error.message : String(error)));
+                    }
+                    else {
+                        
+                        console.error('Ошибка выполнения генератора:',  + (error && error.message ? error.message : String(error)));
                         // Показываем пользователю:
-                        alert("Ошибка выполнения генератора:", error);
+                        alert("Ошибка выполнения генератора:",  + (error && error.message ? error.message : String(error)));
                     }
                 }
             };
@@ -844,6 +855,8 @@ except Exception as e:
         });
         
         const leds = this.bot && this.bot.leds ? this.bot.leds : null;
+        // console.log(leds.pixels);
+        // console.log(this.bot);
         if (leds && leds.pixels) {
             for (let i = 0; i < 4; i++) {
                 const ledAngle = (150 + i * 20) * Math.PI / 180;
