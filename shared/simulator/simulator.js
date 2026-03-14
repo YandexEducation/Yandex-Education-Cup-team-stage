@@ -174,6 +174,7 @@ class RobotSimulator {
             },
             leds: {
                 pixels: [[255,165,0], [255,165,0], [255,165,0], [255,165,0]],
+                pixels_unwrited: [[255,165,0], [255,165,0], [255,165,0], [255,165,0]],
                 fill: (color) => {
                     const c = Array.isArray(color) ? color : [color[0], color[1], color[2]];
                     for (let i = 0; i < 4; i++) {
@@ -181,7 +182,9 @@ class RobotSimulator {
                     }
                     
                 },
-                write: () => {}
+                write: () => {
+                    self.bot.leds.pixels = [...self.bot.leds.pixels_unwrited];
+                }
             },
             line_left: { read: () => self.sensors.lineLeft },
             line_sensor: { read: () => self.sensors.lineCenter },
