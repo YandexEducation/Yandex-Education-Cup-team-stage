@@ -195,6 +195,11 @@
                     } else {
                         window.currentBot.button._pressed = true;
                     }
+                    // Добавляем перезагрузку робота при активной сессии
+                    if (window.simulator && window.simulator.running && getScriptContent()) {
+                        window.simulator.stop();
+                        setTimeout(() => startSimulator({ skipStartButton: true }), 150);
+                    }
                 }
             };
             const release = () => {
